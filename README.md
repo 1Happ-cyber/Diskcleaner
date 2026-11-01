@@ -20,46 +20,6 @@ py -3 -m venv .venv
 .\.venv\Scripts\python.exe main.py
 ```
 
-## 目录结构
-
-```text
-disk_cleaner/
-  main.py                      程序入口
-  pyproject.toml               项目元数据、ruff/coverage 配置
-  requirements.txt             运行依赖（Send2Trash）
-  start.bat / test.bat / build.bat
-  diskcleaner/
-    __init__.py                版本号
-    core.py                    文件快照、扫描、查重、清理服务、回收站抽象
-    analyzers.py               Analyzer 多态层、目录树聚合
-    reports.py                 CSV 导出、重复副本选择策略
-    policy.py                  受保护路径策略
-    history.py                 扫描快照、增量对比、哈希缓存、历史
-    tasks.py                   后台任务调度（线程 + 队列 + 取消）
-    shell.py                   回收站入口
-    diagnostics.py             依赖与环境自检
-    formatting.py              大小格式化
-    gui.py                     界面布局、事件绑定与结果渲染
-  tests/                       82 项 unittest
-    test_core.py               17 项：扫描、统计、查重、清理
-    test_reports.py             8 项：CSV、重复副本策略
-    test_analyzers.py           8 项：分析器、目录树
-    test_policy.py              8 项：受保护路径
-    test_history.py            15 项：快照、增量、哈希缓存、历史
-    test_tasks.py               6 项：任务调度
-    test_env.py                 7 项：回收站入口、依赖自检、数据目录回退
-    test_gui.py                10 项：真实 Tk 窗口渲染与保护逻辑
-    test_cleanup_flow.py        3 项：清理链路集成测试
-  scripts/
-    create_demo.py             生成演示目录
-    verify_recycle.py          回收站人工验收脚本
-    demo_screenshot.py         生成界面截图
-  docs/
-    中期报告.md / 设计说明.md / 测试记录.md / AI迭代记录.md / 扩充记录.md
-    test-output.txt            本次实际测试输出
-    screenshot-*.png           界面截图
-```
-
 ## 测试与演示
 
 ```powershell
@@ -89,8 +49,6 @@ build.bat
 
 脚本依次安装依赖、执行 82 项测试、用 PyInstaller 打包；测试失败即停止。默认生成**目录版** `dist\DiskCleaner\DiskCleaner.exe`（连同 `_internal` 一起复制），压缩成 `dist\DiskCleaner-win64.zip` 后可在未安装 Python 的 Windows 机器解压即用。
 
-> 为什么默认不是单文件 exe：单文件版启动时要先把自身解压到 `%TEMP%`。在“禁止子进程写临时目录”的受限环境（本机就是）会报 `Could not create temporary directory!`；目录版不需要解压，天然避开该限制。确实需要单文件时执行 `build.bat onefile`，生成 `dist\DiskCleaner.exe`，但目标机器的 `%TEMP%` 必须可写。
->
 > 打包注意：必须用**官方 Python**（python.org / scoop 等，自带 `tcl/`、`tk/` 目录）打包。用 Anaconda 的 Python 打包会出现 `ImportError: DLL load failed while importing _tkinter`，因为 PyInstaller 找不到 Anaconda 布局下的 Tcl/Tk。
 
 ## 数据与安全边界
